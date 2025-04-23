@@ -466,10 +466,15 @@ def clear_internal_storage(env: interface.AsyncEnv) -> None:
         ),
         env.controller,
     )
-  adb_utils.issue_generic_request(
-            ["shell", "rm", f"{device_constants.EMULATOR_DATA}/*"],
-            env.controller,
-  )
+  try:
+    adb_utils.issue_generic_request(
+              ["shell", "rm", f"{device_constants.EMULATOR_DATA}/*"],
+              env.controller,
+    )
+  except Exception as e:
+    logging.warning(
+        "Failed to clear internal storage directories: %s", str(e)
+    )
 
 
 def _clear_external_downloads(env: interface.AsyncEnv) -> None:
