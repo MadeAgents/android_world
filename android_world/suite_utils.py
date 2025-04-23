@@ -163,7 +163,10 @@ def create_suite(
   suite = _filter_tasks(suite, task_registry, tasks)
 
   # Sort suite alphabetically by task name.
-  return Suite(sorted(suite.items()))
+  if tasks is None:
+    return Suite(sorted(suite.items()))
+  else:
+    return Suite(list(suite.items()))
 
 
 def _suggest_keyword(
@@ -207,10 +210,12 @@ def _filter_tasks(
           + _suggest_keyword(name, list(task_registry.keys()))
       )
 
-  # Filter.
-  for name, instances in suite.items():
-    if name in tasks:
-      subset[name] = instances
+  # # Filter.
+  # for name, instances in suite.items():
+  #   if name in tasks:
+  #     subset[name] = instances
+  for name in tasks:
+    subset[name] = suite[name]
   return subset
 
 
@@ -255,8 +260,7 @@ def _run_task(
   else:
     agent_successful = task_successful if interaction_results.done else 0.0
     print(
-        f'{"Task Successful ✅" if agent_successful > 0.5 else "Task Failed ❌"};'
-        f' {task.goal}'
+        f'{"Task Successful √√√√√√√√√√√" if agent_successful > 0.5 else "Task Failed xxxxxxxxxx"}; {task.goal}'
     )
 
     if demo_mode:
@@ -410,6 +414,8 @@ def _run_task_suite(
       if demo_mode:
         _update_scoreboard(correct, total, env.controller)
     print()
+
+  process_episodes_fn(episodes_metadata, print_summary=True)
 
   return full_episode_data if return_full_episode_data else episodes_metadata
 
