@@ -499,7 +499,8 @@ def _allocate_step_budget(task_complexity: float) -> int:
   """
   if task_complexity is None:
     raise ValueError('Task complexity must be provided.')
-  return int(10 * (task_complexity))
+  max_step_rate = int(os.getenv('ANDROID_MAX_STEP', '10'))
+  return int(max_step_rate * (task_complexity))
 
 
 def _display_message(
