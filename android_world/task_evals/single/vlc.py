@@ -82,9 +82,9 @@ def _fix_loading_issue(env: interface.AsyncEnv):
     for page in pages:
       wait_time = 0
       should_wait = True
+      actuation.find_and_click_element(page, env.controller)
       while should_wait and wait_time < 300:
         should_wait = False
-        actuation.find_and_click_element(page, env.controller)
         ui_elements = env.controller.get_ui_elements()
         for i, element in enumerate(ui_elements):
           for attr in [element.text, element.content_description]:
