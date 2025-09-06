@@ -31,6 +31,7 @@ RESET_APPS = {
   "chrome": apps.ChromeApp,
   "markor": apps.MarkorApp,
   "simple calendar pro": apps.SimpleCalendarProApp,
+  "tasks": apps.TasksApp,
 }
 
 class TaskEval(abc.ABC):
