@@ -1,4 +1,4 @@
-# Copyright 2024 The android_world Authors.
+# Copyright 2025 The android_world Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@
 import abc
 import random
 from typing import Any
+
 from absl import logging
 from android_world.env import adb_utils
 from android_world.env import device_constants
 from android_world.env import interface
+from android_world.env.setup_device import setup
 from android_world.utils import app_snapshot
 from android_world.utils import datetime_utils
 from android_world.env.setup_device import setup, apps
@@ -135,6 +137,9 @@ class TaskEval(abc.ABC):
           logging.info("Reset app for %s", app_name)
           setup.setup_app(RESET_APPS[app_name], env)
 
+  def install_apps_if_not_installed(self, env: interface.AsyncEnv) -> None:
+    for app_name in self.app_names:
+      setup.install_app_if_not_installed(app_name, env)
 
   @classmethod
   def set_device_time(cls, env: interface.AsyncEnv) -> None:

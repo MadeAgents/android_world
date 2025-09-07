@@ -1,5 +1,7 @@
 # AndroidWorld
 
+<!-- mdlint off(WHITESPACE_LINE_LENGTH) -->
+
 [![Unittests](https://github.com/google-research/android_world/actions/workflows/pytest.yml/badge.svg)](https://github.com/google-research/android_world/actions/workflows/pytest.yml)
 
 <p align="center">
@@ -11,9 +13,12 @@
 
 ![Overview](assets/overview.png)
 
-**AndroidWorld** is an environment for building and benchmarking autonomous computer control agents.
+**AndroidWorld** is an environment for building and benchmarking autonomous
+computer control agents.
 
-It runs on a live Android emulator and contains a highly reproducible benchmark of 116 hand-crafted tasks across 20 apps, which are dynamically instantiated with randomly-generated parameters to create millions of unique task variations.
+It runs on a live Android emulator and contains a highly reproducible benchmark
+of 116 hand-crafted tasks across 20 apps, which are dynamically instantiated
+with randomly-generated parameters to create millions of unique task variations.
 
 In addition to the built-in tasks, AndroidWorld also supports the popular web benchmark, MiniWoB++ from [Liu et al.](http://arxiv.org/abs/1802.08802).
 
@@ -22,12 +27,14 @@ Key features of AndroidWorld include:
 * 📝 **116 diverse tasks** across 20 real-world apps
 * 🎲 **Dynamic task instantiation** for millions of unique variations
 * 🏆 **Durable reward signals** for reliable evaluation
+* 🐳 **Experimental Docker Support** for simplified setup and consistent environments (as of 06/02/2025)
 * 🌐 **Open environment** with access to millions of Android apps and websites
 * 💾 **Lightweight footprint** (2 GB memory, 8 GB disk)
 * 🔧 **Extensible design** to easily add new tasks and benchmarks
 * 🖥️ **Integration with MiniWoB++** web-based tasks
 
 See demo videos on our [website](https://google-research.github.io/android_world/).
+o
 
 ## Installation
 
@@ -37,7 +44,9 @@ See demo videos on our [website](https://google-research.github.io/android_world
 
 1. Launch the Android Emulator from the command line
 
-    Launch the emulator from the command line, not using the Android Studio UI, with the `-grpc 8554` flag which is needed communication with accessibility forwarding app.
+    Launch the emulator from the command line, not using the Android Studio UI,
+    with the `-grpc 8554` flag which is needed communication with accessibility
+    forwarding app.
 
     ```bash
     # Typically it's located in ~/Android/Sdk/emulator/emulator or
@@ -51,14 +60,6 @@ See demo videos on our [website](https://google-research.github.io/android_world
     ```
     conda create -n android_world python=3.11.8
     conda activate android_world
-    ```
-
-1. Install the latest [AndroidEnv](https://github.com/google-deepmind/android_env):
-
-    ```python
-    git clone https://github.com/google-deepmind/android_env.git
-    cd android_env
-    python setup.py install
     ```
 
 1. Install AndroidWorld. *Note: Python 3.11 or above is required.*
@@ -88,32 +89,54 @@ See demo videos on our [website](https://google-research.github.io/android_world
     brew install ffmpeg
     ```
 
-### Known Issues
-
-**Protobuf Version Compatibility**
-
-While running `android_world`, if you encounter an error like:
-
-```bash
-ImportError: cannot import name 'runtime_version' from 'google.protobuf'
-```
-
-Fix by installing a specific protobuf version:
-
-```bash
-pip install protobuf==5.29.0
-```
-
-This is a temporary workaround for dependency conflicts between AndroidEnv and other packages. See [`.github/pytest.yml`](https://github.com/google-research/android_world/tree/main/.github/workflows) for the exact version that should be used to fix the issue.
-
 ## Quickstart
 
-Run the `minimal_task_runner.py` script to see the basic mechanics of AndroidWorld components. It initializes the environment, sets up a task, and runs the default agent, M3A, on it.
+Run the `minimal_task_runner.py` script to see the basic mechanics of
+AndroidWorld components. It initializes the environment, sets up a task, and
+runs the default agent, M3A, on it.
 ```bash
 python minimal_task_runner.py --task=ContactsAddContact
 ```
 
-If you don't specify a task, a random task will be selected. *NOTE: If you want to try open-source apps, i.e. not included with Android OS, please run `--perform_emulator_setup` in the script below.*
+If you don't specify a task, a random task will be selected. *NOTE: If you want
+to try open-source apps, i.e. not included with Android OS, please run
+`--perform_emulator_setup` in the script below.*
+
+## Docker Support (Experimental)
+
+AndroidWorld now offers Docker support. This allows you to run the Android
+environment and server within a Docker container, which can simplify setup and
+ensure a consistent environment.
+
+**Note:** This feature is experimental and has not been extensively tested.
+
+1.  **Build the Docker image:**
+
+    Navigate to the root directory of the `android_world` repository and run:
+    ```bash
+    docker build -t android_world:latest .
+    ```
+
+2.  **Run the Docker container:**
+    ```bash
+    docker run --privileged -p 5000:5000 -it android_world:latest
+    ```
+    This will start the Android emulator and the FastAPI server inside the
+    container. The server will be accessible on `http://localhost:5000`.
+
+3.  **Interact with the environment:**
+    You can see the `scripts/run_suite_on_docker.py` script as an example client
+    to interact with the Android environment server running in Docker.
+
+### Note for Apple Silicon users
+
+There are known [issues](https://github.com/amrsa1/Android-Emulator-image/issues/10) with installing the required package `emulator` on ARM chips (Apple Silicon). To get around this, if building images locally, you should build images for the AMD64/x86_64 instruction set, by running:
+```bash
+docker buildx build --platform linux/amd64 -t android-emulator:latest .
+```
+
+Note, running in a Docker container like this, on an Apple Silicon device will run quite slowly compared to running the Android
+Device and Emulator natively (because you end up running an Android Emulator inside a Linux Emulator...).
 
 ## Run the benchmark
 
@@ -128,13 +151,20 @@ python run.py \
   --tasks=ContactsAddContact,ClockStopWatchRunning \  # Optional: Just run on a subset.
 ```
 
-The first time you run this script, you must install the necessary apps and set permissions by specifying `--perform_emulator_setup`. This is a one-time setup. It may take several minutes depending on the connection speed.
+The first time you run this script, you must install the necessary apps and set
+permissions by specifying `--perform_emulator_setup`. This is a one-time setup.
+It may take several minutes depending on the connection speed.
 
-Above we specify the optional `--tasks` flag to run on a subset of tasks. Leave it empty to run on the entire AndroidWorld suite.
+Above we specify the optional `--tasks` flag to run on a subset of tasks. Leave
+it empty to run on the entire AndroidWorld suite.
 
-The `n_task_combinations` argument specifies how many parameter permutations to use for each task. For example, for an SMS task, it would correspond to different phone number/message combinations for each run.
+The `n_task_combinations` argument specifies how many parameter permutations to
+use for each task. For example, for an SMS task, it would correspond to
+different phone number/message combinations for each run.
 
-If a run fails part-way through, you can resume it by re-running the script with the `--checkpoint_dir` flag pointing to the output directory from the original run.
+If a run fails part-way through, you can resume it by re-running the script with
+the `--checkpoint_dir` flag pointing to the output directory from the original
+run.
 
 ## Running MiniWoB++ tasks
 
@@ -142,8 +172,8 @@ To run the MiniWoB++ web-based tasks in AndroidWorld, simply set
 `--suite_family=miniwob` and `--perform_emulator_setup` in the command above.
 
 A key advantage of running MiniWoB++ tasks is that common input elements are
-rendered as native, commonly used Android UI widgets, rather than as HTML. Thus agents must learn to use universal
-widgets such as time- and date-pickers:
+rendered as native, commonly used Android UI widgets, rather than as HTML. Thus
+agents must learn to use universal widgets such as time- and date-pickers:
 
 <p align="center">
    <img src="assets/miniwob.png" style="width:30%">

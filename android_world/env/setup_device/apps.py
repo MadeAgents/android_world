@@ -1,4 +1,4 @@
-# Copyright 2024 The android_world Authors.
+# Copyright 2025 The android_world Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -76,6 +76,12 @@ class AppSetup(abc.ABC):
 
   # The short name of the app, as used by adb_utils.
   app_name = ""
+
+  @classmethod
+  def package_name(cls) -> str:
+    return adb_utils.extract_package_name(
+        adb_utils.get_adb_activity(cls.app_name)
+    )
 
   @classmethod
   def setup(cls, env: interface.AsyncEnv) -> None:

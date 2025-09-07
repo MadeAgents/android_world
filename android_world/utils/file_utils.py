@@ -1,4 +1,4 @@
-# Copyright 2024 The android_world Authors.
+# Copyright 2025 The android_world Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -363,9 +363,12 @@ def tmp_directory_from_device(
   finally:
     try:
       shutil.rmtree(tmp_directory)
-    except Exception as e:
-      logging.error("Failed to delete temporary directory: %s with error %s",
-                    tmp_directory, e)
+    except Exception as e:  # pylint: disable=broad-exception-caught
+      logging.error(
+          "Failed to delete temporary directory: %s with error %s",
+          tmp_directory,
+          e,
+      )
 
 
 @contextlib.contextmanager

@@ -1,4 +1,4 @@
-# Copyright 2024 The android_world Authors.
+# Copyright 2025 The android_world Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ class GeminiGcpWrapper(LlmWrapper, MultimodalLlmWrapper):
         if enable_safety_checks
         else SAFETY_SETTINGS_BLOCK_NONE,
         generation_config=generation_types.GenerationConfig(
-            temperature=temperature, top_p=top_p, max_output_tokens=1000
+            temperature=temperature, top_p=top_p
         ),
     )
     if max_retry <= 0:
