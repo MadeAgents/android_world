@@ -169,7 +169,10 @@ def create_suite(
   suite = _filter_tasks(suite, task_registry, tasks)
 
   # Sort suite alphabetically by task name.
-  return Suite(sorted(suite.items()))
+  if tasks is None:
+    return Suite(sorted(suite.items()))
+  else:
+    return Suite(list(suite.items()))
 
 
 def _suggest_keyword(
@@ -213,10 +216,12 @@ def _filter_tasks(
           + _suggest_keyword(name, list(task_registry.keys()))
       )
 
-  # Filter.
-  for name, instances in suite.items():
-    if name in tasks:
-      subset[name] = instances
+  # # Filter.
+  # for name, instances in suite.items():
+  #   if name in tasks:
+  #     subset[name] = instances
+  for name in tasks:
+    subset[name] = suite[name]
   return subset
 
 
@@ -261,7 +266,7 @@ def _run_task(
     agent_successful = task_successful if interaction_results.done else 0.0
     _log_and_print(
         '%s; %s',
-        'Task Successful ✅' if agent_successful > 0.5 else 'Task Failed ❌',
+        'Task Successful √√√√√√√√√√√' if agent_successful > 0.5 else 'Task Failed xxxxxxxxxx',
         f' {task.goal}',
     )
 
@@ -417,6 +422,8 @@ def _run_task_suite(
         _update_scoreboard(correct, total, env.controller)
     print()
 
+  process_episodes_fn(episodes_metadata, print_summary=True)
+
   return full_episode_data if return_full_episode_data else episodes_metadata
 
 
@@ -499,7 +506,8 @@ def _allocate_step_budget(task_complexity: float) -> int:
   """
   if task_complexity is None:
     raise ValueError('Task complexity must be provided.')
-  return int(10 * (task_complexity))
+  max_step_rate = int(os.getenv('ANDROID_MAX_STEP', '10'))
+  return int(max_step_rate * (task_complexity))
 
 
 def _display_message(

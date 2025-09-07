@@ -60,10 +60,10 @@ class BrowserTask(task_eval.TaskEval):
         adb_utils.get_adb_activity('chrome')
     )
 
-    adb_utils.clear_app_data(
-        chrome_activity,
-        env.controller,
-    )
+    # adb_utils.clear_app_data(
+    #     chrome_activity,
+    #     env.controller,
+    # )
     adb_utils.grant_permissions(
         chrome_activity,
         'android.permission.POST_NOTIFICATIONS',
