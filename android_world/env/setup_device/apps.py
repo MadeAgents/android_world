@@ -164,8 +164,15 @@ class ChromeApp(AppSetup):
     try:
       controller = tools.AndroidToolController(env=env.controller)
       time.sleep(2.0)
-      # Welcome screen.
-      controller.click_element("Accept & continue")
+      try:
+        # Welcome screen.
+        controller.click_element("Accept & continue")
+      except ValueError as e:
+        # Use without an account
+        logging.warn("Can't find `Accept & continue`, try to clock `Use without an account`.")
+        time.sleep(10)
+        action = json_action.JSONAction(action_type='click', x=540, y=2096)
+        actuation.execute_adb_action(action, [], (0, 0), env.controller)
       time.sleep(2.0)
       # Turn on sync?
       controller.click_element("No thanks")
